@@ -1,0 +1,15 @@
+#zero = reg x0 = valor constante "0"
+#inicializando o registrador t1 com o conteúdo 0x1
+addi t1, zero, imm; # imm = 0x1
+#inicializando o registrador s1 com o conteúdo 0x70 (endereço de memória)
+addi s1, zero, imm; # imm = 0x70
+#inicializando o registrador s1 com o conteúdo 0x70 (endereço de memória)
+addi s2, zero, imm; # imm = 128
+#LOOP
+lw t0, 0(s1)
+add t0, t0, t1;
+sw t0, 0(s1)
+beq t0, s2, imm; # imm = 1 (pula volta do loop e termina o programa)
+jal zero imm # imm = -4 (volta par o inicio do loop)
+nop
+jal zero imm # imm = -1 (loop de termino de programa)

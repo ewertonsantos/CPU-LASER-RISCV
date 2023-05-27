@@ -1,0 +1,29 @@
+.section .data
+    num1: .word 5      # Primeiro número
+    num2: .word 7      # Segundo número
+    resultado: .word 0 # Resultado da soma
+
+.section .text
+.globl _start
+
+# _start:
+#     # Carregar os números da memória
+#     la a0, num1      # Endereço do primeiro número
+#     lw a1, 0(a0)     # Carregar o valor do primeiro número em a1
+    
+#     la a0, num2      # Endereço do segundo número
+#     lw a2, 0(a0)     # Carregar o valor do segundo número em a2
+    
+#     # Somar os números
+#     add a3, a1, a2   # Somar os números e armazenar o resultado em a3
+    
+#     # Armazenar o resultado na memória
+#     la a0, resultado # Endereço do resultado
+#     sw a3, 0(a0)     # Armazenar o valor de a3 no resultado
+    
+#     # Encerrar o programa
+#     li a7, 10        # Código do sistema para encerrar o programa
+#     ecall            # Chamada do sistema
+
+_start:
+    

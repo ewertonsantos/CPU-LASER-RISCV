@@ -1,4 +1,3 @@
-# CPU-LASER-RISCV
 #LOAD WORD
 lw rd, imm(rs1)
 lw t1, 0(s1) #lw register_target, immediate(register_source1)
