@@ -77,22 +77,22 @@ sw  t1, 0(s1) #lw register_source2, immediate(register_source1) # register_sourc
 
 
 #CONDITIONAL JUMP
-beq rs1, rs2, label # label: text indicating instruction address
+beq rs1, rs2, label # label: text indicating instruction address decoded as a immediate
 beq t0, t1, label; # if t0 == t1 then jump immediate's times (immediate's times forward or backward)
-# ================================  BEQ  MACHINE CODE ===================================
-    #        imm 12,10:5       rs1 19:15     funct3 14:12     imm 4:1,11    op 6:0  #
+# ====================================  BEQ  MACHINE CODE =====================================
+    #         imm 11,9:4       rs1 19:15     funct3 14:12     imm 3:0,10     op 6:0  #
                xxxx xxx    |     xx xxx    |      000      |     xxx xx   | 1100 011 
     #           7 bits          5 bits          3 bits          5 bits      7 bits
 
 
 
 #INCONDITIONAL JUMP
-jal target  # jump to target(memory address, typicaly a label) and save position to ra (return register) register
-jal rd, imm  # jump immediate's times (immediate's times forward or backward) (memory address, typicaly a label) and save position to ra (return register) register
+jal rd, label  # jump to target(memory address, typicaly a label) and save position to ra (return register) register
+jal rd, imm    # jump immediate's times (immediate's times forward or backward) (memory address, typicaly a label) and save position to ra (return register) register
 # ================================  JAL  MACHINE CODE ===================================
-    #                     imm 20,10:1,11,19:12                 rd 11:7     op 6:0  #
-                           xxxx xxxx xxxx  xxx          |       xxx xx  |  1100 011 
-    #                            20 bits                        5 bits      7 bits
+    #        imm 20,10:1,11,19:12           rd 11:7     op 6:0  #
+              xxxx xxxx xxxx  xxx     |      xxx xx  |  1100 011 
+    #              20 bits                   5 bits      7 bits
 
 
 
