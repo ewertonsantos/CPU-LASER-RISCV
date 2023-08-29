@@ -1,0 +1,84 @@
+#zero = reg x0 = valor constante "0"
+#inicializando o registrador t1 com o conteúdo 0x1
+addi t1, zero, imm1; # imm = 0x2
+#inicializando o registrador s1 com o conteúdo 0x70 (endereço de memória)
+addi s1, zero, imm2; # imm = 0x70 = d'112
+#inicializando o registrador s1 com o conteúdo 0x80 (endereço de memória)
+addi s2, zero, imm3; # imm = 0x6 = d'6
+#LOOP
+lw t0, 0(s1);
+add t0, t0, t1;
+sw t0, 0(s1)
+beq t0, s2, imm4; # imm = 2 (pula volta do loop e termina o programa)
+jal zero imm5 # imm = -4 (volta par o inicio do loop)
+add zero, zero, zero;nop
+jal zero imm6 # imm = -1 (loop de termino de programa)
+
+# =============================TRADUÇÃO=================================
+#zero = x0  = 000 00
+#t0   = x5  = 001 01
+#t1   = x6  = 001 10
+#s1   = x9  = 010 01
+#s2   = x18 = 100 10
+
+#imm1 11:0 = 0x2  = 000000000010 = d'2
+#imm2 11:0 = 0x46 = 000001000110 = d'70
+#imm3 11:0 = 0x6  = 000000000110 = d'6
+
+#imm4 11:0 = 0x2  =  0  0  000000  0010      ->  imm4 11,9:4 =  0 000000  |  imm4 3:0,10 = 0010 0  
+                    11 10   9:4    3:0
+
+#imm5 19:0 = -4   =  1  11111111  1  1111111100  ->  imm5 19,9:0,10,18:11  = 1 1111111100 1 11111111
+                    19    18:11  10     9:0 
+
+#imm6 19:0 = -1   = 1 1111111111 1 11111111  ->  imm5 19,9:0,10,18:11  = 1 11111111 1 1111111111
+                   19    18:11  10   9:0 
+
+
+0020031304600493050009130004A283006282B30054A02301228263
+
+addi t1, zero, imm1; #  #          imm 11:0           rs1 19:15     funct3 14:12     rd 11:7     op 6:0  #
+                                 000000000010     |     000 00    |      000      |   001 10   | 0010 011 # 32b'00000000001000000000001100010011
+                            #       12 bits            5 bits          3 bits         5 bits      7 bits  # 8h'00200313 
+
+
+addi s1, zero, imm2;#  #          imm 11:0           rs1 19:15     funct3 14:12     rd 11:7     op 6:0  #
+                                 000001000110     |     000 00    |      000      |   010 01   | 0010 011 # 32b'00000100011000000000010010010011
+                            #       12 bits            5 bits          3 bits        5 bits      7 bits   # 8h'04600493
+
+
+addi s2, zero, imm3;#  #          imm 11:0           rs1 19:15     funct3 14:12     rd 11:7     op 6:0  #
+                                 000000000110     |     000 00    |      000      |   100 10   | 0010 011 # 32b'00000000011000000000100100010011
+                            #       12 bits            5 bits          3 bits        5 bits      7 bits   # 8h'600913
+
+
+lw t0, 0(s1);           #   imm 11:0        rs1 19:15   funct3 14:12      rd 11:7     op 6:0   #
+                        0000 0000 0000 |      010 01   |     010      |   001 01   | 000 0011  # 32b'00000000000001001010001010000011
+                        #    12 bits         5 bits        3 bits        5 bits      7 bits    # 8h'0004A283
+
+
+add t0, t0, t1;         #   funct7 31:25      rs2 24:20       rs1 19:15     funct3 14:12     rd 11:7     op 6:0  #
+                              0000 000    |    001 10    |     001 01    |      000      |   001 01   | 0110 011 # 32b'00000000011000101000001010110011
+                        #      7 bits          5 bits           5 bits        3 bits         5 bits      7 bits  # 8h'006282B3
+
+
+sw t0, 0(s1)            #   imm 11:5     rs2 24:20     rs1 19:15   funct3 14:12    imm 4:0     op 6:0  #
+                            0000000   |   001 01    |   010 01   |      010     |   00000   | 010 0011 # 32b'00000000010101001010000000100011
+                        #    7 bits       5 bits        5 bits        3 bits        5 bits     7 bits  # 8h'0054A023
+
+
+beq t0, s2, imm4;       #      imm 11,9:4      rs2 24:20     rs1 19:15     funct3 14:12     imm 3:0,10       op 6:0   # beq rs1, rs2, label  
+                                0000 000    |   100 10   |     001 01    |      000      |     0010 0   |   1100 011  # 32b'00000001001000101000001001100011
+                        #        7 bits         5 bits         5 bits         3 bits          5 bits        7 bits    # 8h'01228263
+
+jal zero imm5           #        imm 19,     9:0,   10,    18:11            rd 11:7      op 6:0  #
+                                      1  1111111100 1    11111111     |    000 00   |  110 1111 # 32b'11111111100111111111000001101111
+                        #                        20 bits                   5 bits      7 bits   # 8h'FF9FF06F
+
+add zero, zero, zero;nop#   funct7 31:25      rs2 24:20       rs1 19:15     funct3 14:12     rd 11:7     op 6:0  #
+                              0000 000    |    000 00    |     000 00    |      000      |   000 00   | 0110 011 # 32b'00000000000000000000000000110011
+                        #      7 bits          5 bits           5 bits        3 bits         5 bits      7 bits  # 8h'33
+
+jal zero imm6           #        imm 19,     9:0,   10,    18:11            rd 11:7      op 6:0  #
+                                      1  1111111111 1    11111111       |    000 00   |  110 1111 # 32b'11111111111111111111000001101111
+                        #                        20 bits                   5 bits      7 bits     # 8h'FFFFF06F
